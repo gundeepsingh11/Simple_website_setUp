@@ -1,3 +1,13 @@
+Run 
+npm install(for first time),
+In terminal 
+gulp
+
+
+
+
+
+Personal Use
 npm init
 npm install --save-dev gulp
 
