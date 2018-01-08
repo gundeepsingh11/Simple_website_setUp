@@ -3,6 +3,8 @@ const imagemin = require('gulp-imagemin');
 const uglify = require('gulp-uglify');
 const sass = require('gulp-sass');
 const concat = require('gulp-concat');
+const minify = require('gulp-minify-css');
+const merge = require('merge-stream');
 const webserver = require('gulp-webserver');
 
 /*
@@ -40,9 +42,21 @@ gulp.task('minify', function(){
 
 // Compile Sass
 gulp.task('sass', function(){
-  gulp.src('src/sass/*.scss')
-      .pipe(sass().on('error', sass.logError))
-      .pipe(gulp.dest('dist/css'));
+  var scssStream = gulp.src('src/sass/*.scss')
+        .pipe(sass())
+        .pipe(concat('scss-files.scss'))
+  ;
+  var mergedStream = merge(scssStream)
+        .pipe(concat('styles.css'))
+        .pipe(minify())
+        .pipe(gulp.dest('dist/css'));
+
+    return mergedStream;
+  // gulp.src('src/sass/*.scss')
+  //     .pipe(sass().on('error', sass.logError))
+  //     .pipe(concat('style.css'))
+  //     .pipe(minify())
+  //     .pipe(gulp.dest('dist/css'));
 });
 
 // Scripts
@@ -56,9 +70,9 @@ gulp.task('scripts', function(){
 gulp.task('webserver', function() {
   gulp.src('dist')
     .pipe(webserver({
-      host: 'localhost',
-      port: 8000,
-      livereload: true,
+      // host: 'localhost',
+      // port: 8000,
+      // livereload: true,
       directoryListing: false,
       open: true,
       // fallback: './dist/index.html'
